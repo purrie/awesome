@@ -1,0 +1,97 @@
+#+title: AwesomeWM config
+#+author: Purrie Brightstar
+
+* Table of Contents :toc:
+- [[#info][Info]]
+- [[#modules][Modules]]
+  - [[#audio-widgets][Audio Widgets]]
+  - [[#client-bindings][Client Bindings]]
+  - [[#client-signals][Client Signals]]
+  - [[#launcher-menu][Launcher Menu]]
+  - [[#key-bindings][Key Bindings]]
+  - [[#defaults][Defaults]]
+  - [[#themeing][Themeing]]
+  - [[#top-bar][Top Bar]]
+  - [[#utilities][Utilities]]
+  - [[#window-layouts][Window Layouts]]
+  - [[#window-rules][Window Rules]]
+- [[#themes][Themes]]
+- [[#dependencies][Dependencies]]
+- [[#contributions][Contributions]]
+- [[#copyright][Copyright]]
+
+* Info
+This is my personal config I use for Awesome window manager. The config is split into modules that each has its own responsibility over specific parts of the desktop management.
+
+* Modules
+** Audio Widgets
+Widgets I wrote for displaying audio and microphone sound level. Gives ability to easily tune the volume for both as well as mute or choose which sinks and sources to use.
+
+** Client Bindings
+Key bindings for client windows
+
+** Client Signals
+All the signals that get connected to client windows
+
+** Launcher Menu
+Contains code for creating a standard launcher for awm.
+
+Aside from that, it has code I wrote for customizable dynamic launcher akin to Dmenu or Rofi with support for web search and local file system navigation. The code currently is WIP.
+
+** Key Bindings
+All the keyboard bindings for controlling the system.
+
+Media key bindings are set up to work with a `media-player` program, which should be an alias to the actual program. It supports any program that uses the same flags as Strawberry music player.
+
+** Defaults
+Responsible for holding default values for use in other modules.
+
+** Themeing
+Code responsible for managing and manipulating theme
+
+** Top Bar
+Wibar code with all the widgets that go along with it
+
+** Utilities
+Collection of usable functions for other modules
+
+** Window Layouts
+Contains just the layouts that are enabled
+
+** Window Rules
+All the rules for client windows
+
+* Themes
+Themes in this config are set up to be enabled based on `current-theme.lua` file. This file returns a string with a name of currently enabled theme that the config will use.
+
+Any theme can be selected dynamically from the launcher menu when it is added to the launcher code and `enable.sh` file is placed in the theme's folder.
+
+The minimum code required in `enable.sh` to work is a line that overrides `current-theme.lua` file to return name of the folder of the theme.
+
+For example:
+#+BEGIN_SRC shell
+#!/usr/bin/env bash
+echo 'return "default"' > ~/.config/awesome/current-theme.lua
+#+END_SRC
+
+* Dependencies
+Currently the only dependencies are icon and gtk themes.
+For cursors:
+#+BEGIN_SRC
+Catppuccin-Macchiato-Mauve-Cursors
+Catppuccin-Macchiato-Red-Cursors
+#+END_SRC
+For gtk themes:
+#+BEGIN_SRC
+Catppuccin-Macchiato-Standard-Mauve-Dark
+Catppuccin-Macchiato-Standard-Red-Dark
+#+END_SRC
+
+* Contributions
+Since this is my personal config, accepting contributions doesn't make much sense unless it's something I would find personally useful or is a bug fix.
+
+* Copyright
+Copyright© Purrie Brightstar 2023
+All the code and art in this repository is licensed under Do-What-You-Want-With-It license. Go and make your desktop Awesome and Beautiful.
+
+If you include any of my code in a package meant to be used as a generic collection of components or as a template for personal configs, attribution is appreciated but not required.
