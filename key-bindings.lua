@@ -48,6 +48,27 @@ local globalkeys = gears.table.join(
         end,
         { description = "focus previous by index", group = "client" }
     ),
+    awful.key(
+        { modkey, "Shift" }, "t",
+        function ()
+            local c = client.focus
+            if c then
+                awful.titlebar.toggle(c)
+            end
+        end,
+        { description = "toggle client titlebar", group = "client" }
+    ),
+    awful.key(
+        { modkey, "Shift" }, "f",
+        function ()
+            local c = client.focus
+            if c then
+                c.floating = not c.floating
+                c.ontop = c.floating
+            end
+        end,
+        { description = "toggle client titlebar", group = "client" }
+    ),
 
     -- launcher menu
     awful.key(
@@ -364,9 +385,7 @@ for i = 1, 9 do
     )
 end
 
--- Set keys
 root.keys(globalkeys)
--- }}}
 
 -- {{{ Mouse bindings for the desktop
 -- root.buttons(gears.table.join(
