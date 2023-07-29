@@ -1,4 +1,9 @@
 local defaults = {}
+local theme = require("theme-defaults")
+
+for key, value in pairs(theme) do
+  defaults[key] = value
+end
 
 -- This is used later as the default terminal and editor to run.
 defaults.terminal = "alacritty"
