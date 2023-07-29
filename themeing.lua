@@ -24,8 +24,22 @@ themeing.set_wallpaper = function(s)
 end
 
 themeing.set_theme_name = function(n)
-    awful.spawn.with_shell("~/.config/awesome/themes/" .. n .. "/enable.sh" )
-    awesome.restart()
+    awful.spawn.easy_async_with_shell(
+      "echo 'return {}' > ~/.config/awesome/theme-defaults.lua",
+      function()
+        awful.spawn.easy_async_with_shell(
+          "echo 'return \"" .. n .. "\"' > ~/.config/awesome/current-theme.lua",
+          function()
+            awful.spawn.easy_async_with_shell(
+              "~/.config/awesome/themes/" .. n .. "/enable.sh",
+              function()
+                awesome.restart()
+              end
+            )
+          end
+        )
+      end
+    )
 end
 
 themeing.update_gaps = function()
