@@ -5,6 +5,7 @@ local defaults = require("defaults")
 local themeing = require("themeing")
 local naughty = require("naughty")
 local wibox = require("wibox")
+local utils = require("utilities")
 -- local gears = require("gears")
 
 local launcher = {}
@@ -21,12 +22,11 @@ local myawesomemenu = {
    { "power off", "systemctl poweroff" },
 }
 
-local themes_menu = {
-  { "default", function() themeing.set_theme_name("default") end },
-  { "purple",  function() themeing.set_theme_name("purple")  end },
-  { "red",     function() themeing.set_theme_name("red")     end },
-  { "cyber",   function() themeing.set_theme_name("cyber")   end },
-}
+local themes_menu = {}
+local themes_folder = utils.get_dir_contents_blocking(defaults.home .. "/.config/awesome/themes")
+for _, name in ipairs(themes_folder) do
+	table.insert(themes_menu, { name, function() themeing.set_theme_name(name) end })
+end
 
 launcher.main_menu = awful.menu({
     items = {
