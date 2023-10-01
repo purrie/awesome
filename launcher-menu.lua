@@ -55,7 +55,6 @@ local function run_search(text)
     -- we have a lead command
     text = text:gsub("%w+%s+(.+)", "\"%1\"")
   end
-  naughty.notify { text = text }
   local c = hints.children[1]
   awful.spawn(c.cmd .. text)
 end
