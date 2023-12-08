@@ -173,6 +173,11 @@ local globalkeys = gears.table.join(
         function() awful.spawn("emacsclient -c -a emacs") end,
         { description = "Open emacs editor", group = "program" }
     ),
+    awful.key(
+      { modkey }, "g",
+      function () awful.spawn.with_shell(defaults.terminal .. " -e $SHELL -c lazygit") end,
+      { description = "Open Lazygit", group = "program" }
+    ),
 
     -- Layouts
     awful.key(
