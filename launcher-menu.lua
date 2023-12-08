@@ -41,9 +41,63 @@ launcher.launcher = awful.widget.launcher({
     menu = launcher.main_menu
 })
 
+--- @class SearchBox
+--- @field visible (boolean)
+--- @field geometry (function)
 local search_box = nil
 local input = nil
+--- @class Hints
+--- @field children (table)
+--- @field swap (function)
 local hints = nil
+
+local function change_cwd (path)
+  path = path:gsub("^%s*(.-)%s*$", "%1")
+  if path:find("~") then
+    path = path:gsub("~", os.getenv("HOME"))
+  end
+
+  local feedback = function (_, stderr, _, exit_code)
+    if exit_code == 0 then
+      naughty.notify {
+        title = "Changed system CWD",
+        text = "New CWD: " .. path
+      }
+    else
+      naughty.notify {
+        preset = naughty.config.presets.critical,
+        title = "Failed to change system CWD",
+        text = stderr,
+      }
+    end
+  end
+
+  local chdr = function (_, _, _, exit_code)
+    if exit_code == 0 then
+      awful.spawn.easy_async_with_shell("change-dir " .. path, feedback)
+    else
+      naughty.notify {
+        preset = naughty.config.presets.critical,
+        title = "Could not change CWD!",
+        text = "Could not find path " .. path
+      }
+    end
+  end
+
+  awful.spawn.easy_async_with_shell("ls " .. path, chdr)
+end
+
+--- @param cmd (string)
+local function run_in_terminal (cmd)
+  cmd = cmd:gsub("^%s*(.-)%s*$", "%1")
+  awful.spawn.with_shell(defaults.terminal .. " -e $SHELL -i -C " .. cmd)
+end
+
+--- @param cmd (string)
+local function run_in_terminal_and_close (cmd)
+  cmd = cmd:gsub("^%s*(.-)%s*$", "%1")
+  awful.spawn.with_shell(defaults.terminal .. " -e $SHELL -c " .. cmd)
+end
 
 local function hide_search_box()
   search_box.visible = false
@@ -56,7 +110,17 @@ local function run_search(text)
     text = text:gsub("%w+%s+(.+)", "\"%1\"")
   end
   local c = hints.children[1]
-  awful.spawn(c.cmd .. text)
+  if type(c.cmd) == 'function' then
+    c.cmd(text)
+  elseif type(c.cmd) == 'string' then
+    awful.spawn(c.cmd .. text)
+  else
+    naughty.notify {
+      preset = naughty.config.presets.critical,
+      title = "Unsupported command type",
+      text = "Launcer was asked to perform command " .. type(c.cmd) .. " which it doesn't support"
+    }
+  end
 end
 
 local function add_hints(ui)
@@ -96,6 +160,27 @@ local function add_hints(ui)
       cmd = defaults.terminal .. " --working-directory ",
       short = "cd",
       priority = 9,
+    },
+    {
+      widget = wibox.widget.textbox,
+      text = "Change current working directory",
+      cmd = change_cwd,
+      short = "cwd",
+      priority = 10,
+    },
+    {
+      widget = wibox.widget.textbox,
+      text = "Run command in terminal",
+      cmd = run_in_terminal,
+      short = "cmd",
+      priority = 11,
+    },
+    {
+      widget = wibox.widget.textbox,
+      text = "Run command and exit",
+      cmd = run_in_terminal_and_close,
+      short = "run",
+      priority = 11,
     }
   }
   ui:add(hints)
